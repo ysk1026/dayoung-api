@@ -1,6 +1,6 @@
 import setuptools
 # pip install .
-with open("README.py", 'r') as fh:
+with open("README.md", 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
