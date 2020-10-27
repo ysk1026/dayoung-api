@@ -63,4 +63,55 @@ class ReviewDao(ReviewDto):
         session.commit()
         
     @staticmethod
-    def modify(review)
+    def modify(review):
+        Session = openSession()
+        session = Session()
+        session.add(review)
+        session.commit()
+        
+    @classmethod
+    def delete(cls,rev_id):
+        Session = openSession()
+        session = Session()
+        data = cls.query.get(rev_id)
+        session.delete(data)
+        session.commit()
+        
+# ==============================================================
+# ==============================================================
+# ====================        API       ========================
+# ==============================================================
+# ==============================================================
+
+parser = reqparse.RequestParser()
+parser.add_argument('user_id', type =int, required =False, help ='This field cannot be left blank')
+parser.add_argument('movie_id', type =int, required =False, help ='This field cannot be left blank')
+parser.add_argument('title', type =str, required =False, help ='This field cannot be left blank')
+parser.add_argument('content', type =str, required =False, help ='This field cannot be left blank')
+
+class Review(Resource):
+    
+    @staticmethod
+    def post():
+        args = parser.parge_args()
+        review = ReviewDto(args['title'], args['content'], \
+            args['user_id'], args['movie_id'])
+        
+        try:
+            ReviewDao.save(args)
+            return {'code' : 0, 'message' : 'SUCCESS'}, 200
+        except:
+            return {'message' : 'An error occured inserting the review'}, 500
+        
+    def get(self, id):
+        review = ReviewDao.find_by_id(id)
+        if review:
+            return review.json()
+        return {'message' : 'Article not found'}, 404
+    
+    def put(self, id):
+        data = Review.parser.parse_args()
+        review = ReviewDao.find_by_id(id)
+        
+        
+        
