@@ -113,5 +113,15 @@ class Review(Resource):
         data = Review.parser.parse_args()
         review = ReviewDao.find_by_id(id)
         
+        review.title = data['title']
+        review.content = data['content']
+        review.save()
+        return review.json()
+    
+class Reviews(Resource):
+    def get(self):
+        return {'articles' : list(map(lambda article: article.json(), ReviewDao.find_all()))}
+        # return {'articles':[article.json() for article in ArticleDao.find_all()]}
+        
         
         
